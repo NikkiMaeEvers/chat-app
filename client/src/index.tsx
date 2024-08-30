@@ -3,13 +3,18 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import SocketsProvider from './context/socket.context';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+// SocketsProvider wraps App making it accessable to all components in our app.
 root.render(
   <React.StrictMode>
-    <App />
+    <SocketsProvider> 
+      <App />
+    </SocketsProvider>
   </React.StrictMode>
 );
 

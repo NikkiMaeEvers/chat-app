@@ -1,26 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
+import { useSockets } from './context/socket.context';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const { socket } = useSockets(); //socket connection retrieved from context, will use to interact with server
+  const [socketId, setSocketId] = useState<string | undefined>("");
+
+  // listen for a `connect` event, update socket id
+  useEffect(() => {
+    socket.on("connect", () => setSocketId(socket.id));
+
+    return () => {
+      socket.off("connect", () => setSocketId(socket.id));
+    };
+  }, [socket]);
+
+  // display socketID in UI
+  return <div>SocketId: {socketId}</div>;
 }
+
+
 
 export default App;

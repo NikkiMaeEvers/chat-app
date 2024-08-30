@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessagesContainer, RoomsContainer } from "./containers";
 import { useSockets } from "./context/socket.context";
 
 function App() {
   const { socket, username, setUsername } = useSockets();  // Access context values
+  const [socketId, setSocketId] = useState<string | undefined>("");
   const [usernameInput, setUsernameInput] = useState<string>(""); // Create state for username input
+
+  // listen for a `connect` event, update socket id
+  useEffect(() => {
+    socket.on("connect", () => setSocketId(socket.id));
+
+    return () => {
+      socket.off("connect", () => setSocketId(socket.id));
+    };
+  }, [socket]);
 
   const handleSetUsername = () => {
   if (!usernameInput.trim()) return; //exit function if username is empty
@@ -37,7 +47,5 @@ function App() {
 }
 
 export default App;
-function useRef<T>(arg0: null) {
-  throw new Error("Function not implemented.");
-}
+
 

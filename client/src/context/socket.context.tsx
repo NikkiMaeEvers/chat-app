@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { SOCKET_URL } from '../config/default';
+import { EVENTS } from '../config/events';
 
 
 interface Room {
@@ -30,6 +31,16 @@ function SocketsProvider({ children }: { children: React.ReactNode }) {
   const [username, setUsername] = useState<string | undefined>("");
   const [roomId, setRoomId] = useState<string | undefined>("");
   const [rooms, setRooms] = useState<Room[]>([{ id: "", name: "" }]);
+
+  // Listen to sockets for available rooms, set rooms on UI
+  socket.on(EVENTS.SERVER.ROOMS, (value) => {
+    setRooms(value);
+  });
+  
+  // Listen to sockets if user joined a room, update room id
+  socket.on(EVENTS.SERVER.JOINED_ROOM, (value) => {
+    setRoomId(value);
+  });
 
   return (
     // Pass the socket, username, and setUsername through the context provider
